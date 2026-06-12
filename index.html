@@ -1,8 +1,567 @@
 <!DOCTYPE html>
-<html>
-<head><title>Hunter Ascend</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hunter Ascend: Fitness Duel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan: #00E5FF;
+      --cyan-dim: rgba(0,229,255,0.12);
+      --cyan-glow: rgba(0,229,255,0.35);
+      --bg: #080C14;
+      --bg2: #0D1620;
+      --text: #E8F0F8;
+      --muted: rgba(232,240,248,0.45);
+      --border: rgba(0,229,255,0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(8,12,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: var(--cyan);
+    }
+
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      margin-bottom: 32px;
+      background: var(--cyan-dim);
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(36px, 7vw, 72px);
+      font-weight: 900;
+      letter-spacing: 6px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span { color: var(--cyan); }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--cyan);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      box-shadow: 0 0 30px var(--cyan-glow);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px var(--cyan-glow);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* DIVIDER */
+    .divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      margin: 0 auto 80px;
+    }
+
+    /* SECTION */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 500px;
+      margin-bottom: 56px;
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 14px;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      color: var(--cyan);
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--cyan-dim);
+      line-height: 1;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      width: 80px; height: 80px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      background: var(--bg2);
+      color: var(--cyan);
+      font-size: 24px;
+    }
+
+    .step h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .step p { font-size: 14px; color: var(--muted); }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--border);
+    }
+
+    .stat {
+      background: var(--bg2);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--cyan);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+
+    /* CTA */
+    .cta-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 64px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
+    }
+
+    .cta-box h2 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cta-box p {
+      color: var(--muted);
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+
+    footer p {
+      font-size: 12px;
+      color: rgba(232,240,248,0.25);
+      letter-spacing: 1px;
+    }
+
+    /* PLAY BADGE */
+    .play-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.15s;
+    }
+    .play-badge:hover { transform: scale(1.03); }
+    .play-badge-icon { font-size: 28px; }
+    .play-badge-text { text-align: left; }
+    .play-badge-text small { display: block; font-size: 10px; color: rgba(255,255,255,0.6); }
+    .play-badge-text strong { font-size: 16px; }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
 <body>
-<h1>Hunter Ascend: Fitness Duel</h1>
-<p>A fitness app for hunters.</p>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">HUNTER ASCEND</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#download">Download</a>
+      <a href="privacy-policy.html">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">NOW AVAILABLE ON GOOGLE PLAY</div>
+    <h1>HUNTER<br/><span>ASCEND</span></h1>
+    <p>Turn your fitness journey into an epic battle. Level up your body, challenge friends, and rise through the ranks.</p>
+    <div class="hero-buttons">
+      <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" class="btn-primary" target="_blank">
+        ▶ GET IT ON GOOGLE PLAY
+      </a>
+      <a href="#features" class="btn-secondary">LEARN MORE →</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section style="padding-top: 0;">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">177+</div>
+        <div class="stat-label">COUNTRIES</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">QUESTS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">FREE</div>
+        <div class="stat-label">TO PLAY</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">💪</div>
+        <div class="stat-label">REAL RESULTS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-label">WHAT AWAITS YOU</div>
+    <h2 class="section-title">YOUR AWAKENING<br/><span style="color:var(--cyan)">BEGINS HERE</span></h2>
+    <p class="section-sub">Hunter Ascend turns every workout into a quest and every milestone into a victory.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚔️</div>
+        <h3>FITNESS DUELS</h3>
+        <p>Challenge friends to real fitness battles. Complete quests, earn XP, and prove who's the stronger hunter.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>LEVEL SYSTEM</h3>
+        <p>Every workout earns XP. Watch your hunter level up as you build real strength and discipline.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <h3>DAILY QUESTS</h3>
+        <p>Fresh challenges every day to keep you motivated. Complete streaks and unlock powerful rewards.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>CUSTOM GOALS</h3>
+        <p>Set your path — fat loss, muscle gain, discipline, or self-improvement. Your journey, your rules.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>HUNTER RANK</h3>
+        <p>Rise through the ranks from E to S class. Your dedication determines your destiny.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>SOCIAL BATTLES</h3>
+        <p>Sign in with Google and connect with other hunters. Track leaderboards and dominate the competition.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="background: var(--bg2); border-radius: 20px; max-width: 1100px;">
+    <div class="section-label">THE PATH</div>
+    <h2 class="section-title">HOW IT <span style="color:var(--cyan)">WORKS</span></h2>
+    <p class="section-sub">Three steps to begin your awakening.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>AWAKEN</h3>
+        <p>Download the app and complete your awakening ritual. Set your goals and create your hunter profile.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>TRAIN</h3>
+        <p>Accept daily quests, complete workouts, and earn XP. Every rep counts toward your next level.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>ASCEND</h3>
+        <p>Challenge other hunters, climb the leaderboard, and become the ultimate fitness champion.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section id="download">
+    <div class="cta-box">
+      <h2>BEGIN YOUR<br/><span style="color:var(--cyan)">AWAKENING</span></h2>
+      <p>Download Hunter Ascend for free on Google Play. Your transformation starts today.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" class="play-badge" target="_blank">
+        <div class="play-badge-icon">▶</div>
+        <div class="play-badge-text">
+          <small>GET IT ON</small>
+          <strong>Google Play</strong>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="delete-account.html">Delete Account</a>
+      <a href="mailto:djdeveloper1202@gmail.com">Contact</a>
+      <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" target="_blank">Google Play</a>
+    </div>
+    <p>© 2026 Dj Studios · Hunter Ascend: Fitness Duel · All rights reserved</p>
+  </footer>
+
 </body>
 </html>
