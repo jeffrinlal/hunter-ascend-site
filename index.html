@@ -29,7 +29,6 @@
       overflow-x: hidden;
     }
 
-    /* Grid background */
     body::before {
       content: '';
       position: fixed;
@@ -42,7 +41,6 @@
       z-index: 0;
     }
 
-    /* NAV */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -74,7 +72,6 @@
     }
     .nav-links a:hover { color: var(--cyan); }
 
-    /* HERO */
     .hero {
       position: relative;
       z-index: 1;
@@ -184,14 +181,12 @@
     }
     .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
 
-    /* DIVIDER */
     .divider {
       width: 60px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--cyan), transparent);
       margin: 0 auto 80px;
     }
 
-    /* SECTION */
     section {
       position: relative;
       z-index: 1;
@@ -222,7 +217,6 @@
       margin-bottom: 56px;
     }
 
-    /* FEATURES */
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -260,7 +254,6 @@
       line-height: 1.7;
     }
 
-    /* HOW IT WORKS */
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -268,17 +261,11 @@
       position: relative;
     }
 
-    .step {
-      text-align: center;
-    }
+    .step { text-align: center; }
 
     .step-num {
       font-family: 'Orbitron', monospace;
-      font-size: 48px;
       font-weight: 900;
-      color: var(--cyan-dim);
-      line-height: 1;
-      margin-bottom: 16px;
       border: 1px solid var(--border);
       width: 80px; height: 80px;
       display: flex; align-items: center; justify-content: center;
@@ -298,7 +285,6 @@
 
     .step p { font-size: 14px; color: var(--muted); }
 
-    /* STATS */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -330,7 +316,6 @@
       color: var(--muted);
     }
 
-    /* CTA */
     .cta-box {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -365,7 +350,55 @@
       position: relative;
     }
 
-    /* FOOTER */
+    .download-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .play-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.15s;
+    }
+    .play-badge:hover { transform: scale(1.03); }
+    .play-badge-icon { font-size: 28px; }
+    .play-badge-text { text-align: left; }
+    .play-badge-text small { display: block; font-size: 10px; color: rgba(255,255,255,0.6); }
+    .play-badge-text strong { font-size: 16px; }
+
+    .apk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.15s, border-color 0.2s;
+    }
+    .apk-badge:hover {
+      transform: scale(1.03);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+    .apk-badge-icon { font-size: 28px; }
+    .apk-badge-text { text-align: left; }
+    .apk-badge-text small { display: block; font-size: 10px; color: var(--muted); }
+    .apk-badge-text strong { font-size: 16px; }
+
     footer {
       position: relative;
       z-index: 1;
@@ -397,29 +430,11 @@
       letter-spacing: 1px;
     }
 
-    /* PLAY BADGE */
-    .play-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: #000;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px;
-      padding: 10px 20px;
-      text-decoration: none;
-      color: #fff;
-      transition: transform 0.15s;
-    }
-    .play-badge:hover { transform: scale(1.03); }
-    .play-badge-icon { font-size: 28px; }
-    .play-badge-text { text-align: left; }
-    .play-badge-text small { display: block; font-size: 10px; color: rgba(255,255,255,0.6); }
-    .play-badge-text strong { font-size: 16px; }
-
     @media (max-width: 600px) {
       nav { padding: 16px 20px; }
       .nav-links { display: none; }
       .hero-buttons { flex-direction: column; align-items: center; }
+      .download-buttons { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -446,7 +461,9 @@
       <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" class="btn-primary" target="_blank">
         ▶ GET IT ON GOOGLE PLAY
       </a>
-      <a href="#features" class="btn-secondary">LEARN MORE →</a>
+      <a href="https://github.com/yourusername/hunter_ascend/releases/download/v1.0.0/app-release.apk" class="btn-secondary" download>
+        ⬇ DOWNLOAD APK
+      </a>
     </div>
   </div>
 
@@ -541,14 +558,23 @@
   <section id="download">
     <div class="cta-box">
       <h2>BEGIN YOUR<br/><span style="color:var(--cyan)">AWAKENING</span></h2>
-      <p>Download Hunter Ascend for free on Google Play. Your transformation starts today.</p>
-      <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" class="play-badge" target="_blank">
-        <div class="play-badge-icon">▶</div>
-        <div class="play-badge-text">
-          <small>GET IT ON</small>
-          <strong>Google Play</strong>
-        </div>
-      </a>
+      <p>Download Hunter Ascend for free. Available on Google Play or direct APK download.</p>
+      <div class="download-buttons">
+        <a href="https://play.google.com/store/apps/details?id=com.hunterascend.hunter_ascend" class="play-badge" target="_blank">
+          <div class="play-badge-icon">▶</div>
+          <div class="play-badge-text">
+            <small>GET IT ON</small>
+            <strong>Google Play</strong>
+          </div>
+        </a>
+        <a href="https://github.com/yourusername/hunter_ascend/releases/download/v1.0.0/app-release.apk" class="apk-badge" download>
+          <div class="apk-badge-icon">⬇</div>
+          <div class="apk-badge-text">
+            <small>DIRECT DOWNLOAD</small>
+            <strong>Download APK</strong>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
